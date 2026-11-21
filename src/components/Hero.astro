@@ -1,0 +1,251 @@
+---
+/**
+ * HERO — primeira dobra: "DEV FRONT-END" + a foto.
+ * Camadas (de trás pra frente): chuva de código → foto P&B que derrete no preto
+ * (com calor laranja subindo) → título digitado → grafite sublinhando o FRONT-END.
+ */
+import { Picture } from 'astro:assets';
+import heroImg from '../assets/hero-raffaela.webp';
+---
+<section id="inicio" class="hero" aria-labelledby="hero-title">
+  <!-- Chuva de código (src/scripts/codeRain.ts) -->
+  <canvas class="hero__rain" data-rain aria-hidden="true"></canvas>
+
+  <div class="hero__stage">
+    <div class="hero__photo">
+      <Picture
+        src={heroImg}
+        formats={['avif', 'webp']}
+        fallbackFormat="webp"
+        widths={[480, 760, 1080, 1351]}
+        sizes="(min-width: 1024px) 62vw, 100vw"
+        alt="Raffaela Forasteira de óculos escuros, em destaque no meio de uma multidão apagada"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+      <!-- calor laranja subindo pela foto -->
+      <span class="hero__heat" aria-hidden="true"></span>
+    </div>
+    <span class="hero__vignette" aria-hidden="true"></span>
+  </div>
+
+  <span class="hero__fade" aria-hidden="true"></span>
+  <span class="hero__neon hero__neon--tr" aria-hidden="true"></span>
+  <span class="hero__neon hero__neon--bl" aria-hidden="true"></span>
+
+  <div class="hero__content">
+    <!-- Linha de terminal: digitada inteira, pedaço por pedaço (cada span tem a sua cor) -->
+    <p class="hero__term" aria-hidden="true">
+      <span class="t-user" data-type="raffaela@forasteira">raffaela@forasteira</span><span class="t-dim" data-type=":">:</span><span class="t-path" data-type="~/portfolio">~/portfolio</span><span class="t-dim" data-type="$ ">$ </span><span class="t-cmd" data-type="npm run dev">npm run dev</span><span class="t-caret" data-caret></span>
+    </p>
+
+    <h1 id="hero-title" class="hero__title">
+      <span class="sr-only">Dev Front-end</span>
+      <span class="hero__dev" data-scramble="DEV" data-glitch="DEV" aria-hidden="true">DEV</span>
+      <span class="hero__fe-wrap" aria-hidden="true">
+        <span class="hero__fe" data-scramble="FRONT-END" data-fit>FRONT-END</span>
+        <!-- grafite: sublinha a borda de baixo do FRONT-END no fim da sequência -->
+        <svg class="hero__strike" viewBox="0 0 600 80" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <!-- borda "spray": ruído desloca o traço e deixa a beirada irregular -->
+            <filter id="spray" x="-5%" y="-40%" width="110%" height="180%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" result="n" />
+              <feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G" result="d" />
+              <feGaussianBlur in="d" stdDeviation="2.4" result="haze" />
+              <feMerge><feMergeNode in="haze" /><feMergeNode in="d" /></feMerge>
+            </filter>
+          </defs>
+          <g filter="url(#spray)">
+            <path class="s1" pathLength="1" d="M4 46 C 80 38, 150 30, 240 34 S 420 30, 500 22 S 570 18, 596 14" />
+            <path class="s2" pathLength="1" d="M30 54 C 140 46, 260 44, 380 38 S 520 30, 580 26" />
+            <!-- escorridos da tinta -->
+            <path class="drip" pathLength="1" d="M168 33 v 26" />
+            <path class="drip" pathLength="1" d="M402 31 v 18" />
+            <path class="drip" pathLength="1" d="M532 20 v 30" />
+          </g>
+        </svg>
+      </span>
+    </h1>
+
+    <p class="hero__ok" data-ok aria-hidden="true">
+      <span class="ok">✓</span> ready in <b>0.42s</b> <span class="t-dim">— compilado com café e criatividade</span>
+    </p>
+  </div>
+</section>
+
+<script>
+  import { initHero } from '../scripts/hero';
+  initHero();
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: calc(var(--nav-h) + 28px) var(--gutter) clamp(3rem, 8svh, 5rem);
+    padding-inline: max(var(--gutter), calc((100% - var(--max)) / 2 + 20px));
+    isolation: isolate;
+  }
+
+  /* ---------- Chuva de código ---------- */
+  .hero__rain {
+    position: absolute; inset: 0; z-index: -3; width: 100%; height: 100%;
+    opacity: .5;
+    -webkit-mask-image: radial-gradient(ellipse 70% 80% at 20% 40%, #000 20%, transparent 80%);
+            mask-image: radial-gradient(ellipse 70% 80% at 20% 40%, #000 20%, transparent 80%);
+  }
+
+  /* ---------- Foto ---------- */
+  .hero__stage { position: absolute; inset: 0 0 22% 0; z-index: -2; }
+  .hero__photo { position: absolute; inset: 0; }
+  .hero__photo :global(picture) { display: block; width: 100%; height: 100%; }
+  .hero__photo :global(img) {
+    width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%;
+    filter: grayscale(1) contrast(1.08) brightness(.95);
+  }
+  .hero__photo {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 16%, #000 50%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0, #000 16%, #000 50%, transparent 100%);
+  }
+  /* Calor: laranja "colorindo" os tons médios da parte de baixo */
+  .hero__heat {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to top, rgba(240, 60, 26, .85) 0%, rgba(240, 60, 26, .35) 35%, transparent 65%);
+    mix-blend-mode: color;
+  }
+  .hero__vignette {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse 75% 70% at 50% 38%, transparent 40%, var(--bg) 100%);
+  }
+  .hero__fade {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 40%; z-index: -1; pointer-events: none;
+    background: linear-gradient(to bottom, transparent, var(--bg) 85%);
+  }
+
+  /* ---------- Neon dos cantos (laranja) ---------- */
+  .hero__neon {
+    position: absolute; z-index: -1; pointer-events: none; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(240, 60, 26, .26), rgba(240, 60, 26, .08) 50%, transparent 100%);
+    animation: neon-breathe 7s ease-in-out infinite alternate;
+  }
+  .hero__neon--tr { width: 70vw; height: 52vh; right: -32vw; top: -24vh; }
+  .hero__neon--bl { width: 80vw; height: 50vh; left: -52vw; bottom: -30vh; animation-delay: -3.5s;
+    background: radial-gradient(closest-side, rgba(240, 60, 26, .36), rgba(240, 60, 26, .1) 50%, transparent 100%); }
+  @keyframes neon-breathe { from { transform: scale(.92); } to { transform: scale(1.06); } }
+
+  /* ---------- Conteúdo ---------- */
+  .hero__content { position: relative; width: max-content; max-width: 100%; }
+  @media (max-width: 1023.98px) { .hero__content { margin-inline: auto; } }
+
+  .hero__term {
+    font-family: var(--font-mono); font-size: clamp(.72rem, .66rem + .3vw, .9rem);
+    color: var(--ink); margin-bottom: clamp(.6rem, 1.6svh, 1.2rem);
+    white-space: nowrap;
+  }
+  .t-user { color: var(--fire); font-weight: 700; }
+  .t-path { color: #8AB4FF; }
+  .t-dim { color: var(--muted); }
+  .t-cmd { margin-left: .5ch; }
+  .t-caret {
+    display: inline-block; width: .6em; height: 1.15em; margin-left: 2px;
+    vertical-align: -.2em; background: var(--fire);
+    box-shadow: 0 0 12px var(--glow);
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .hero__title {
+    font-family: var(--font-impact); font-weight: 900; text-transform: uppercase;
+    font-size: clamp(8rem, min(42vw, 30svh), 21rem); /* = altura do DEV */
+    line-height: .8; letter-spacing: .005em;
+    display: flex; flex-direction: column; width: max-content; max-width: 100%;
+  }
+  .hero__dev { display: block; position: relative; color: var(--ink); }
+  .hero__fe-wrap { display: block; position: relative; margin-top: .06em; }
+  .hero__fe {
+    display: block; width: max-content;
+    font-size: .36em; /* referência de largura: o JS aumenta o DEV até fechar a mesma borda */
+    color: var(--fire);
+    text-shadow: 0 0 .35em rgba(240, 60, 26, .45);
+  }
+
+  /* letras do título (largura travada pelo JS) */
+  .hero__title :global(.ch) { display: inline-block; text-align: center; }
+
+  /* Glitch do DEV: duas cópias deslocadas, fatiadas por clip-path */
+  .hero__dev::before, .hero__dev::after {
+    content: attr(data-glitch); position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  }
+  .hero__dev::before { color: var(--fire); }
+  .hero__dev::after { color: #fff; mix-blend-mode: difference; }
+  .hero__dev:global(.is-glitch)::before { opacity: 1; animation: glitch-a .42s steps(2) both; }
+  .hero__dev:global(.is-glitch)::after { opacity: 1; animation: glitch-b .42s steps(2) both; }
+  @keyframes glitch-a {
+    0% { clip-path: inset(10% 0 70% 0); transform: translate(-6px, 0); }
+    33% { clip-path: inset(55% 0 20% 0); transform: translate(7px, 0); }
+    66% { clip-path: inset(30% 0 52% 0); transform: translate(-4px, 0); }
+    100% { clip-path: inset(80% 0 4% 0); transform: translate(3px, 0); }
+  }
+  @keyframes glitch-b {
+    0% { clip-path: inset(62% 0 18% 0); transform: translate(6px, 0); }
+    33% { clip-path: inset(12% 0 74% 0); transform: translate(-7px, 0); }
+    66% { clip-path: inset(44% 0 36% 0); transform: translate(5px, 0); }
+    100% { clip-path: inset(4% 0 86% 0); transform: translate(-2px, 0); }
+  }
+
+  /* Grafite: sublinha a borda de baixo do FRONT-END (destaque), levemente inclinado */
+  .hero__strike {
+    position: absolute; left: -4%; bottom: -.1em; width: 108%; height: .13em;
+    transform: rotate(-1.2deg);
+    overflow: visible; pointer-events: none;
+  }
+  .hero__strike path {
+    fill: none; stroke: var(--ink); stroke-linecap: round; stroke-linejoin: round;
+    stroke-dasharray: 1; stroke-dashoffset: 0;
+  }
+  .hero__strike .s1 { stroke-width: 17; }
+  .hero__strike .s2 { stroke-width: 7; opacity: .85; }
+  .hero__strike .drip { stroke-width: 5; opacity: .9; }
+
+  .hero__ok {
+    margin-top: clamp(1.9rem, 4.6svh, 2.8rem); /* espaço pro grafite e os escorridos */
+    font-family: var(--font-mono); font-size: clamp(.72rem, .66rem + .3vw, .9rem); white-space: nowrap;
+  }
+  .hero__ok .ok { color: #3DDC84; font-weight: 700; }
+  .hero__ok b { color: var(--fire); }
+  @media (max-width: 559.98px) { .hero__ok .t-dim { display: none; } }
+  /* ---------- Desktop: foto à direita, título à esquerda ---------- */
+  @media (min-width: 1024px) {
+    .hero { justify-content: center; padding-bottom: 12svh; }
+    .hero__neon--tr { width: 46vw; height: 62vh; right: -17vw; top: -30vh; }
+    .hero__neon--bl { width: 52vw; height: 66vh; left: -36vw; bottom: -40vh; }
+    .hero__stage { inset: 0 0 0 auto; width: 62%; }
+    /* duas máscaras em elementos aninhados (mask-composite é instável entre navegadores) */
+    .hero__photo {
+      -webkit-mask-image: linear-gradient(to right, transparent 0, #000 40%, #000 84%, transparent 100%);
+              mask-image: linear-gradient(to right, transparent 0, #000 40%, #000 84%, transparent 100%);
+    }
+    .hero__photo :global(picture) {
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 60%, transparent 100%);
+              mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 60%, transparent 100%);
+    }
+    .hero__photo :global(img) { object-position: 50% 30%; }
+    .hero__vignette { background: radial-gradient(ellipse 70% 75% at 58% 40%, transparent 42%, var(--bg) 100%); }
+    .hero__fade { height: 30%; }
+    .hero__title { font-size: clamp(9rem, min(20vw, 34svh), 20rem); }
+  }
+
+  /* ---------- Entrada (só com motion) ---------- */
+  :global(.js-anim .hero__title:not(.is-ready) > [aria-hidden]) { visibility: hidden; }
+  :global(.js-anim) .hero__ok { opacity: 0; }
+  :global(.js-anim) .hero__ok:global(.is-on) { opacity: 1; transition: opacity .4s; }
+  /* grafite: o traço principal passa rápido (gesto de spray), o segundo vem logo atrás, depois a tinta escorre */
+  :global(.js-anim) .hero__strike path { stroke-dashoffset: 1; }
+  :global(.js-anim) .hero__strike:global(.is-on) .s1 { stroke-dashoffset: 0; transition: stroke-dashoffset .45s cubic-bezier(.6, 0, .3, 1); }
+  :global(.js-anim) .hero__strike:global(.is-on) .s2 { stroke-dashoffset: 0; transition: stroke-dashoffset .4s cubic-bezier(.6, 0, .3, 1) .2s; }
+  :global(.js-anim) .hero__strike:global(.is-on) .drip { stroke-dashoffset: 0; transition: stroke-dashoffset 1.4s cubic-bezier(.3, 0, .2, 1) .6s; }
+  :global(.js-anim) .hero__strike:global(.is-on) .drip:nth-of-type(4) { transition-delay: .8s; }
+  :global(.js-anim) .hero__strike:global(.is-on) .drip:nth-of-type(5) { transition-delay: .7s; }
+</style>

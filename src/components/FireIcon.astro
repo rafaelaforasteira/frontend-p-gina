@@ -1,0 +1,66 @@
+---
+/**
+ * Ícone do portfólio: bolinha de fogo com olhinhos bravos, em laranja.
+ * As labaredas são peças separadas que tremulam (cada uma num ritmo),
+ * os olhos são recortes (máscara), então funcionam sobre qualquer fundo.
+ */
+interface Props { size?: string; class?: string; label?: string; }
+const { size = '28px', class: cls = '', label } = Astro.props;
+const id = `fire-${Math.random().toString(36).slice(2, 8)}`;
+---
+<svg
+  class:list={['fire', cls]}
+  viewBox="0 0 64 64"
+  width={size}
+  height={size}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+>
+  <defs>
+    <mask id={`${id}-eyes`} maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
+      <rect width="64" height="64" fill="#fff" />
+      <!-- olhos bravos: canto de dentro mais baixo -->
+      <path d="M19.5 42.5 L 29.5 46.2 C 29 49.6 24.6 50.6 22.3 47.6 C 21 46.2 20 44.6 19.5 42.5 Z" fill="#000" />
+      <path d="M44.5 42.5 L 34.5 46.2 C 35 49.6 39.4 50.6 41.7 47.6 C 43 46.2 44 44.6 44.5 42.5 Z" fill="#000" />
+    </mask>
+  </defs>
+  <g mask={`url(#${id}-eyes)`}>
+    <!-- labaredas (atrás do corpo) -->
+    <path class="fire__flame f1" d="M23 34 C 19 25, 24 17, 30.5 3.5 C 31 12, 37 15, 39.5 21 C 41 25.5, 40.5 30, 38 34 Z" />
+    <path class="fire__flame f2" d="M15 42 C 12 34, 13.5 27, 18.5 21.5 C 18 27.5, 21.5 30, 25 32 L 22 40 Z" />
+    <path class="fire__flame f3" d="M49 42 C 52.5 35, 52 28.5, 47.5 23 C 48 28.5, 44.5 31, 41 33 L 42 40 Z" />
+    <path class="fire__flame f4" d="M38 31 C 38.5 25, 41.5 20.5, 44 15.5 C 45.5 21, 45 26.5, 42.5 31.5 Z" />
+    <!-- corpo -->
+    <circle cx="32" cy="43" r="17.5" />
+  </g>
+</svg>
+
+<style>
+  .fire { display: block; flex: none; overflow: visible; fill: var(--fire); filter: drop-shadow(0 0 6px var(--glow)); }
+  .fire__flame {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: flicker 1.1s ease-in-out infinite alternate;
+  }
+  .f1 { animation-duration: .9s; }
+  .f2 { animation-duration: 1.15s; animation-delay: -.4s; }
+  .f3 { animation-duration: 1.05s; animation-delay: -.7s; }
+  .f4 { animation-duration: .75s; animation-delay: -.2s; }
+
+  /* tremular: estica, encolhe e balança pros lados, como chama de verdade */
+  @keyframes flicker {
+    0%   { transform: scale(1, 1) skewX(0deg); }
+    25%  { transform: scale(.94, 1.12) skewX(-6deg); }
+    50%  { transform: scale(1.04, .92) skewX(3deg); }
+    75%  { transform: scale(.96, 1.08) skewX(6deg); }
+    100% { transform: scale(1, .97) skewX(-3deg); }
+  }
+
+  /* brilho pulsando junto */
+  .fire { animation: fire-glow 1.6s ease-in-out infinite alternate; }
+  @keyframes fire-glow {
+    from { filter: drop-shadow(0 0 4px rgba(240, 60, 26, .35)); }
+    to   { filter: drop-shadow(0 0 10px rgba(255, 106, 61, .6)); }
+  }
+</style>

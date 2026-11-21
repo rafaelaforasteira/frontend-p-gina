@@ -1,0 +1,58 @@
+---
+/**
+ * Layout base: <head>, fontes, trava do tema escuro, grão global e scanlines.
+ */
+import '../styles/global.css';
+import fImpact from '@fontsource/big-shoulders-display/files/big-shoulders-display-latin-900-normal.woff2?url';
+import fText from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
+import fMono from '@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2?url';
+import fMono7 from '@fontsource/jetbrains-mono/files/jetbrains-mono-latin-700-normal.woff2?url';
+import fMarker from '@fontsource/permanent-marker/files/permanent-marker-latin-400-normal.woff2?url';
+
+interface Props { title: string; description: string; }
+const { title, description } = Astro.props;
+
+const lockDark = `:root{color-scheme:dark;background:#0A0A0A}html,body{background:#0A0A0A !important;color:#F5F3EF}`;
+const fontFaces = `
+@font-face{font-family:'Big Shoulders Display';font-style:normal;font-weight:900;font-display:swap;src:url(${fImpact}) format('woff2');}
+@font-face{font-family:'Geist Variable';font-style:normal;font-weight:100 900;font-display:swap;src:url(${fText}) format('woff2-variations');}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400;font-display:swap;src:url(${fMono}) format('woff2');}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:700;font-display:swap;src:url(${fMono7}) format('woff2');}
+@font-face{font-family:'Permanent Marker';font-style:normal;font-weight:400;font-display:swap;src:url(${fMarker}) format('woff2');}
+`;
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0A0A0A" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- Marca .js-anim só se o motion vai rodar (senão tudo já aparece no lugar) -->
+    <script is:inline>
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js-anim');
+    </script>
+
+    <link rel="preload" href={fImpact} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={fMono} as="font" type="font/woff2" crossorigin />
+    <style is:inline set:html={fontFaces}></style>
+    <style is:inline set:html={lockDark}></style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <!-- Cortina da abertura: tela toda preta até a foto aparecer (só existe com motion ativo) -->
+    <div class="intro-curtain" data-curtain aria-hidden="true"></div>
+    <slot />
+    <div class="grain" aria-hidden="true"></div>
+    <div class="scanlines" aria-hidden="true"></div>
+  </body>
+</html>

@@ -1,0 +1,133 @@
+/* =========================================================================
+   FORASTEIRA DEV — Design system
+   Paleta "Inferno": preto, branco e laranja fogo. Neon = glow laranja.
+   Camadas: reset → tokens → base → components → utilities
+   ========================================================================= */
+@layer reset, tokens, base, components, utilities;
+
+/* ----------------------------------------------------------------- RESET */
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  * { margin: 0; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body { min-height: 100svh; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  img, picture, svg, video, canvas { display: block; max-width: 100%; }
+  input, button, textarea, select { font: inherit; color: inherit; }
+  button { background: none; border: 0; cursor: pointer; padding: 0; }
+  a { color: inherit; text-decoration: none; }
+  ul[role="list"], ol[role="list"] { list-style: none; padding: 0; }
+  p, h1, h2, h3 { overflow-wrap: break-word; }
+}
+
+/* ---------------------------------------------------------------- TOKENS */
+@layer tokens {
+  :root {
+    color-scheme: dark;
+
+    /* Tipografia — 4 vozes: impacto, texto, código e grafite */
+    --font-impact: 'Big Shoulders Display', 'Arial Narrow', Impact, sans-serif;
+    --font-text: 'Geist Variable', 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    --font-marker: 'Permanent Marker', 'Comic Sans MS', cursive;
+
+    --fs-label: 0.6875rem;
+    --fs-small: clamp(0.8125rem, 0.78rem + 0.15vw, 0.875rem);
+    --fs-body: clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
+
+    --gutter: clamp(1rem, 0.4rem + 2.6vw, 2.75rem);
+    --nav-h: 64px;
+    --max: 1360px;
+
+    --r-xs: 8px; --r-ctl: 12px; --r-bar: 18px; --r-card: 22px;
+    --blur: 18px;
+
+    --ease-out: cubic-bezier(.215, .61, .355, 1);
+    --ease-expo: cubic-bezier(.16, 1, .3, 1);
+
+    /* Paleta Inferno */
+    --bg: #0A0A0A;
+    --bg-2: #121212;
+    --surface: #171717;
+    --ink: #F5F3EF;
+    --muted: #9C9A96;
+    --line: rgba(255, 255, 255, .08);
+    --line-strong: rgba(255, 255, 255, .16);
+    --fire: #F03C1A;        /* laranja principal */
+    --fire-hi: #FF6A3D;     /* hover / destaques */
+    --on-fire: #0A0A0A;
+    --glow: rgba(240, 60, 26, .45);
+    --glass: rgba(255, 255, 255, .05);
+    --glass-strong: rgba(14, 14, 14, .6);
+    --glass-line: rgba(255, 255, 255, .12);
+    --grain-opacity: .07;
+    --focus: var(--fire-hi);
+  }
+}
+
+/* ------------------------------------------------------------------ BASE */
+@layer base {
+  html { background: var(--bg); }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-text);
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    overflow-x: clip;
+  }
+  html, main { overflow-x: clip; }
+  ::selection { background: var(--fire); color: var(--on-fire); }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .skip-link {
+    position: fixed; left: 12px; top: -60px; z-index: 100;
+    padding: 10px 14px; border-radius: var(--r-ctl);
+    background: var(--fire); color: var(--on-fire); font-family: var(--font-mono); font-size: var(--fs-small);
+  }
+  .skip-link:focus { top: 12px; }
+}
+
+/* ------------------------------------------------------------ COMPONENTS */
+@layer components {
+  /* Grão global — textura de papel/filme por cima de tudo */
+  .grain {
+    position: fixed; inset: -50%; z-index: 90; pointer-events: none;
+    opacity: var(--grain-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: grain 1s steps(6) infinite;
+  }
+  @keyframes grain {
+    0% { transform: translate(0, 0); } 20% { transform: translate(-4%, 3%); }
+    40% { transform: translate(3%, -5%); } 60% { transform: translate(-2%, 4%); }
+    80% { transform: translate(5%, 2%); } 100% { transform: translate(0, 0); }
+  }
+
+  /* Cortina da abertura: cobre tudo (menos grão/scanlines). Só com motion.
+     Failsafe: se o JS não assumir (.intro-live), ela some sozinha depois de 4s. */
+  .intro-curtain { display: none; }
+  .js-anim .intro-curtain {
+    display: block; position: fixed; inset: 0; z-index: 80; background: var(--bg); pointer-events: none;
+    animation: curtain-failsafe .6s ease 4s forwards;
+  }
+  .intro-live .intro-curtain { animation: none; }
+  @keyframes curtain-failsafe { to { opacity: 0; visibility: hidden; } }
+  .intro-lock, .intro-lock body { overflow: hidden; }
+
+  /* Scanlines de monitor CRT (bem sutis) */
+  .scanlines {
+    position: fixed; inset: 0; z-index: 89; pointer-events: none;
+    background: repeating-linear-gradient(to bottom, rgba(255,255,255,.025) 0 1px, transparent 1px 3px);
+    mix-blend-mode: overlay;
+  }
+
+}
+
+@layer utilities {
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+  }
+}

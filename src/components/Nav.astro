@@ -1,0 +1,114 @@
+---
+/** NAV — barra de vidro fixa: logo FORASTEIRA + bolinha de fogo, rotas tipo terminal e botão do WhatsApp. */
+import FireIcon from './FireIcon.astro';
+import { WHATSAPP_URL_MENU } from '../data/contact';
+const links = [
+  { href: '#sobre', label: 'sobre' },
+  { href: '#stack', label: 'stack' },
+  { href: '#projetos', label: 'projetos' },
+];
+---
+<header class="nav" data-intro-nav>
+  <div class="nav__bar">
+    <a class="nav__logo" href="#inicio" aria-label="Raffaela Forasteira, início">
+      <span class="nav__word">Forasteira</span>
+      <FireIcon size="28px" class="nav__fire" />
+    </a>
+    <nav aria-label="Seções">
+      <ul class="nav__links" role="list">
+        {links.map((l) => (
+          <li><a href={l.href}><span class="nav__tilde">~/</span>{l.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <!-- Botão do WhatsApp (mesmo do portfólio de social media: moldura escura + botão interno + círculo da seta) -->
+    <a class="ncta nav__cta" href={WHATSAPP_URL_MENU} target="_blank" rel="noopener" data-track="whatsapp-menu" aria-label="Entrar em contato pelo WhatsApp">
+      <span class="ncta__btn">
+        <svg class="ncta__wa" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.3 21.7l5-1.3A9.7 9.7 0 1 0 12 2.2Zm0 17.7c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 19.9Zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8.9c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.1 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.6.3 2.7 2.7 0 0 0-.9 2c0 1.2.9 2.4 1 2.5.1.2 1.7 2.7 4.2 3.8 1.6.7 2.2.7 3 .6.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1l-.5-.5Z" /></svg>
+        <span>Entrar em contato</span>
+      </span>
+      <span class="ncta__arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+      </span>
+    </a>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: fixed; inset: 12px 0 auto; z-index: 50;
+    padding-inline: var(--gutter);
+  }
+  .nav__bar {
+    max-width: var(--max); margin-inline: auto;
+    height: var(--nav-h);
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: 0 7px 0 18px;
+    border: 1px solid var(--glass-line); border-radius: var(--r-bar);
+    background: var(--glass-strong);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(140%);
+            backdrop-filter: blur(var(--blur)) saturate(140%);
+  }
+  /* mesma assinatura do portfólio de social media: Big Shoulders 900, caixa-alta, branco */
+  .nav__logo { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; }
+  .nav__word {
+    font-family: var(--font-impact); font-weight: 900; text-transform: uppercase;
+    font-size: 1.45rem; letter-spacing: .02em; line-height: 1; color: var(--ink);
+    white-space: nowrap;
+  }
+  .nav__logo :global(.nav__fire) { translate: 0 -2px; transition: transform .5s cubic-bezier(.34, 1.56, .64, 1); }
+  .nav__logo:hover :global(.nav__fire) { transform: translate(2px, -3px) rotate(-8deg); }
+  @media (max-width: 379.98px) { .nav__word { font-size: 1.2rem; } }
+
+  .nav__links { display: none; gap: clamp(1rem, 2.4vw, 2.25rem); font-family: var(--font-mono); font-size: var(--fs-small); }
+  .nav__links a { color: var(--muted); transition: color .2s var(--ease-out); }
+  .nav__links a:hover { color: var(--ink); }
+  .nav__links a:hover .nav__tilde { color: var(--fire); }
+  .nav__tilde { color: rgba(255,255,255,.28); transition: color .2s; }
+  @media (min-width: 820px) { .nav__links { display: flex; } }
+
+  /* ---------- Botão do WhatsApp (copiado do portfólio de social media, paleta Inferno) ---------- */
+  .ncta {
+    display: inline-flex; align-items: center; gap: 6px; height: 50px; padding: 5px 7px 5px 5px;
+    border-radius: var(--r-bar); border: 1px solid rgba(255, 255, 255, .16);
+    background: #171717; color: var(--ink);
+    transition: border-color .3s, box-shadow .3s;
+  }
+  .ncta__btn {
+    display: inline-flex; align-items: center; gap: .5rem; height: 100%; padding: 0 1rem 0 .8rem;
+    border-radius: calc(var(--r-bar) - 5px);
+    background: var(--fire); color: #fff;
+    font-weight: 600; font-size: .875rem; white-space: nowrap;
+    /* volume, como na referência */
+    box-shadow: inset 0 3px 2px rgba(255, 255, 255, .25), inset 0 -3px 6px rgba(0, 0, 0, .12), inset 0 1px 0 rgba(255, 255, 255, .45), 0 6px 14px -8px rgba(0, 0, 0, .4);
+    transition: background-color .3s, filter .3s;
+  }
+  .ncta__wa { width: 18px; height: 18px; flex: none; transition: transform .5s cubic-bezier(.34, 1.56, .64, 1); }
+  .ncta__arrow {
+    display: grid; place-items: center; width: 26px; height: 26px; flex: none;
+    border-radius: 50%; border: 1px solid currentColor; color: var(--ink);
+    transition: margin-left .35s ease, background-color .35s, color .35s;
+  }
+  .ncta__arrow svg { width: 14px; height: 14px; transition: transform .35s ease-in-out; }
+  /* hover: a seta se afasta e gira, o ícone "toca", a moldura acende em laranja */
+  .ncta:hover { border-color: rgba(240, 60, 26, .5); box-shadow: 0 0 24px -6px var(--glow); }
+  .ncta:hover .ncta__btn { filter: brightness(1.08); }
+  .ncta:hover .ncta__wa { animation: ncta-ring .6s ease; }
+  .ncta:hover .ncta__arrow { margin-left: 14px; background: var(--fire); color: #fff; border-color: var(--fire); }
+  .ncta:hover .ncta__arrow svg { transform: rotate(-45deg); }
+  @keyframes ncta-ring { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-18deg); } 40% { transform: rotate(14deg); } 60% { transform: rotate(-8deg); } 80% { transform: rotate(4deg); } }
+
+  /* ---------- Celular e iPad (<1024): WhatsApp só no ícone, redondo e pulsando (como no iPad da referência) ---------- */
+  @media (max-width: 1023.98px) {
+    .ncta { padding: 4px; width: 50px; border-radius: 50%; justify-content: center; position: relative; }
+    .ncta__btn { width: 40px; height: 40px; padding: 0; justify-content: center; border-radius: 50%; }
+    .ncta__btn > span, .ncta__arrow { display: none; }
+    .ncta::after {
+      content: ''; position: absolute; inset: 4px; border-radius: 50%; border: 2px solid var(--fire);
+      animation: ncta-pulse 1.8s ease-out infinite; pointer-events: none;
+    }
+    .ncta__wa { width: 20px; height: 20px; }
+  }
+  @keyframes ncta-pulse { from { transform: scale(1); opacity: .8; } to { transform: scale(1.6); opacity: 0; } }
+</style>
